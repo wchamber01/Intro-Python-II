@@ -1,10 +1,10 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
 room = {
-    'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+    'outside':  Room("Outside Cave Entrance", "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -38,6 +38,11 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
+player = input("Enter player's name: \n")
+print(player)
+player = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player. Type [Q] to quit game\n")
+print(player)
+room = 'outside'
 
 # Write a loop that:
 #
@@ -49,3 +54,9 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+'''
+* Add a REPL parser to `adv.py` that accepts directional commands to move the player
+  * After each move, the REPL should print the name and description of the player's current room
+  * Valid commands are `n`, `s`, `e` and `w` which move the player North, South, East or West
+  * The parser should print an error if the player tries to move where there is no room.
+  '''

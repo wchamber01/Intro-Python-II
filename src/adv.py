@@ -20,13 +20,13 @@ import textwrap
 room = {
     'outside':  Room("Outside", "You are now outside the cave entrance. North of you, the cave mouth beckons.\n"),
 
-    'foyer':    Room("Foyer", "You have entered the Foyer. Dim light filters in from the south. Dusty passages run north and east.\n"),
+    'foyer':    Room("Foyer", """You have entered the Foyer. Dim light filters in from the south. Dusty passages run north and east.\n"""),
 
-    'overlook': Room("The Grand Overlook", "You are at The Grand Overlook. A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm.\n"),
+    'overlook': Room("The Grand Overlook", """You are at The Grand Overlook. A steep cliff appears before you, falling into the darkness. Ahead to the north, a light flickers in the distance, but there is no way across the chasm.\n"""),
 
-    'narrow':   Room("Narrow Passage", "Entering from the west, the long narrow passage appears to bend towards the north. The smell of gold permeates the air.\n"),
+    'narrow':   Room("Narrow Passage", """Entering from the west, the long narrow passage appears to bend towards the north. The smell of gold permeates the air.\n"""),
 
-    'treasure': Room("The Treasure Chamber", "You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers. The only exit is to the south.\n"),
+    'treasure': Room("The Treasure Chamber", """You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by earlier adventurers. The only exit is to the south.\n"""),
 }
 
 
@@ -45,23 +45,6 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
-'''class Player:
-    def __init__(self, name, location, inventory=None):
-        self.name = name
-        self.location = location
-        self.health = 100
-        self.inventory = [] if inventory is None else inventory
-class Room:
-    def __init__(self, room_name, description, room_inventory=None):
-        self.room_name = room_name
-        self.description = description
-        self.room_inventory = [] if room_inventory is None else room_inventory
-        self.n_to = None
-        self.s_to = None
-        self.e_to = None
-        self.w_to = None
-'''
-
 # Welcome message
 print('You have started Jumanji Quarantine Version!')
 cmd = input("If you don't fear for your life, press 'Enter' to continue, otherwise press 'Q' + 'Enter' to abort.\n").lower()
@@ -74,25 +57,31 @@ else:
 # Make a new player object that is currently in the 'outside' room.
 player_name = input("Enter player's name: ")
 player = Player(player_name, 100, room['outside'])
-# print('\nWelcome, ' + player.name + '! Your health is ' + str(player.health), '. You have landed outside. North of you, the cave mouth beckons.Choose a direction to start exploring.\n')
-key = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.").lower()
+#print('initialize',player)
+print('\nWelcome, ' + player.name + '! Your health is '+str(player.health)+'%.\nYou have landed outside.\nNorth of you, the cave mouth beckons.\nChoose a direction to start exploring.\n')
 
-
-def no_enter():
-    print("Can't go that way")
 
 # Write a loop that:
-
 while True:
+
+    def no_enter():
+        print("Can't go that way!")
+
     def describe():
-        print(player.room)
-        print(player.room.description)
-    describe()
+        print('Current room: '+ player.room.name)
+        print('Description:'+ player.room.description)
+
+    key = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.\n").lower()
+    if key == 'q':
+        break
+    # describe()
+    
     # player chooses North
-    if key == 'n':
+    elif key == 'n':
         if player.room.n_to != None:
             player.room == player.room.n_to
-            # describe()
+            print('player room inside loop',player.room.name)
+            describe()
         else:
             no_enter()
     # player chooses North
@@ -118,7 +107,7 @@ while True:
             no_enter()
     else:
         print('Invalid entry. Please try again.')
-        exit(0)
+        # exit(0)
 
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).

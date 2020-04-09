@@ -2,12 +2,11 @@
 # currently, etc.
 
 class Player:
-    def __init__(self, name, location):
+    def __init__(self, name, health, room, inventory=None):
         self.name = name
-        self.location = location
-        self.location_info = None
-        self.health = 100
-        self.inventory = []
+        self.health = health
+        self.room = room
+        self.inventory = [] if inventory is None else inventory
     
     def __str__(self):
-        return('{self.name}, {self.location}, {self.location_info}').format(self=self)
+        return('{self.name}, {self.health}, {self.room}').format(self=self)

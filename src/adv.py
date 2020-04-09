@@ -1,18 +1,19 @@
 from room import Room
 from player import Player
+import random
 import textwrap
 
 # Create save file
-def load_results():
-    text_file = open("saved.txt", "r")
-    saved = text_file.read().split(",")
-    text_file.close()
-    return saved
+# def load_results():
+#     text_file = open("saved.txt", "r")
+#     saved = text_file.read().split(",")
+#     text_file.close()
+#     return saved
 
-def save_results(w):
-    text_file = open("saved.txt", "w")
-    text_file.write(str(w))
-    text_file.close()
+# def save_results(w):
+#     text_file = open("saved.txt", "w")
+#     text_file.write(str(w))
+#     text_file.close()
 
 # Declare all the rooms
 
@@ -44,55 +45,79 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+'''class Player:
+    def __init__(self, name, location, inventory=None):
+        self.name = name
+        self.location = location
+        self.health = 100
+        self.inventory = [] if inventory is None else inventory
+class Room:
+    def __init__(self, room_name, description, room_inventory=None):
+        self.room_name = room_name
+        self.description = description
+        self.room_inventory = [] if room_inventory is None else room_inventory
+        self.n_to = None
+        self.s_to = None
+        self.e_to = None
+        self.w_to = None
+'''
+
 # Welcome message
 print('You have started Jumanji Quarantine Version!')
-game_start = input("If you don't fear for your life, press 'Enter' to continue, otherwise press 'Q' + 'Enter' to abort.\n").lower()
-print(game_start)
-if game_start == 'q':
+cmd = input("If you don't fear for your life, press 'Enter' to continue, otherwise press 'Q' + 'Enter' to abort.\n").lower()
+print(cmd)
+if cmd == 'q':
     exit(0)
 else:
     pass
 
 # Make a new player object that is currently in the 'outside' room.
 player_name = input("Enter player's name: ")
-location = 'outside'
-player = Player(player_name, str(room[location]))
-# player = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.
-print('\nWelcome, ' + player.name + '! You have landed outside. Choose a direction to start exploring.\n')
+player = Player(player_name, 100, room['outside'])
+# print('\nWelcome, ' + player.name + '! Your health is ' + str(player.health), '. You have landed outside. North of you, the cave mouth beckons.Choose a direction to start exploring.\n')
+key = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.").lower()
 
-print(room.keys())
-#player.location_info = room[player.location]
 
-def describe():
-    print(player.name)
-    print(player.location)
-    print(player.location_info)
-
-describe()
+def no_enter():
+    print("Can't go that way")
 
 # Write a loop that:
 
-while not player == 'q':
+while True:
+    def describe():
+        print(player.room)
+        print(player.room.description)
+    describe()
     # player chooses North
-    if player == 8:
-        player.location = room[player.location].n_to
-        describe()
-    # player chooses South
-    elif player == 2:
-        player.location = room[player.location].s_to
-        describe()
+    if key == 'n':
+        if player.room.n_to != None:
+            player.room == player.room.n_to
+            # describe()
+        else:
+            no_enter()
+    # player chooses North
+    elif key == 's':
+        if player.room.s_to != None:
+            player.room == player.room.s_to
+            # describe()
+        else:
+            no_enter()
     # player chooses East
-    elif player == 6:
-        player.location = room[player.location].e_to
-        describe()
+    elif key == 'e':
+        if player.room.e_to != None:
+            player.room == player.room.e_to
+            # describe()
+        else:
+            no_enter()
     # player chooses West
-    elif player == 4:
-        player.location = room[player.location].w_to
-        describe()
+    elif key == 'w':
+        if player.room.w_to != None:
+            player.room == player.room.w_to
+            # describe()
+        else:
+            no_enter()
     else:
-        print(player.name)
-        print('If you see this message it hit the else statement')
-        # print("Invalid selection. Please try again.")
+        print('Invalid entry. Please try again.')
         exit(0)
 
 # * Prints the current room name

@@ -4,6 +4,6 @@
 #This will be the _base class_ for specialized item types to be declared later.
 
 class Item:
-    def __init__(self, name, room):
-        self.name = name
-        self.room = room
+    def __init__(self, item_name, item_location):
+        self.item_name = item_name
+        self.item_location = item_location

@@ -1,4 +1,5 @@
 from room import Room
+from item import Item
 from player import Player
 import random
 import textwrap
@@ -14,6 +15,16 @@ import textwrap
 #     text_file = open("saved.txt", "w")
 #     text_file.write(str(w))
 #     text_file.close()
+
+# Declare all the items
+
+item = {
+    'thieves': Item("Thieves", +25, """You have discovered an ancient blend of spices rumored to cure the dreaded Corona Virus.\n"""),
+    
+    'mask': Item("Mask", +5, """You find an N95 facemask sitting on a dusty table.\n"""),
+    
+    'torch': Item("Torch", 0, """A burning torch hanging on the wall""")
+}
 
 # Declare all the rooms
 
@@ -70,44 +81,48 @@ while True:
     def describe():
         print('Current room: '+ player.room.name)
         print('Description:'+ player.room.description)
-
+   
+    def test():    
+        x, y = key.split() 
+        print("Number of boys: ", x) 
+        print("Number of girls: ", y) 
+    
     key = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.\n").lower()
     if key == 'q':
         break
-    # describe()
     
+    elif key == 'get item':
+        print('test, test, test')
     # player chooses North
     elif key == 'n':
         if player.room.n_to != None:
-            player.room == player.room.n_to
-            print('player room inside loop',player.room.name)
+            player.room = player.room.n_to
             describe()
         else:
             no_enter()
     # player chooses North
     elif key == 's':
         if player.room.s_to != None:
-            player.room == player.room.s_to
-            # describe()
+            player.room = player.room.s_to
+            describe()
         else:
             no_enter()
     # player chooses East
     elif key == 'e':
         if player.room.e_to != None:
-            player.room == player.room.e_to
-            # describe()
+            player.room = player.room.e_to
+            describe()
         else:
             no_enter()
     # player chooses West
     elif key == 'w':
         if player.room.w_to != None:
-            player.room == player.room.w_to
-            # describe()
+            player.room = player.room.w_to
+            describe()
         else:
             no_enter()
     else:
         print('Invalid entry. Please try again.')
-        # exit(0)
 
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).

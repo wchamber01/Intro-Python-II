@@ -10,3 +10,9 @@ class Player:
     
     def __str__(self):
         return('{self.name}, {self.health}, {self.room}').format(self=self)
+      
+    def add_item(self, item):
+        self.inventory.append(item)
+    
+    def drop_item(self, item):
+        self.inventory.remove(item)

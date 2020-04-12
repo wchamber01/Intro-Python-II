@@ -142,19 +142,33 @@ while True:
                         player.drop_item(i)
                         player.room.add_item(i)
                         print('You have dropped ',i.name,'. Choose your next move.')
-                if found == False:
-                    print("Error: Invalid entry or item does not exist.")  
+                    else:
+                        found == False
+                        print("Error: Invalid entry or item does not exist.")  
                 else:
                     found = False
-                    print('Stash armor before dropping.')                
+                    print('Stash armor before dropping.')
         
-        # ************ How do I distinguish between armor and healing items? *******************
+        elif action_handler[0] == 'stash' or action_handler[0] == 'lose':
+            print('action handler:',action_handler[0], action_handler[1])    
+            target_item = action_handler[1]
+            found=False
+            for armor in player.inventory:
+                if armor.name.lower() == target_item.lower():
+                    found = True
+                    player.stash_armor(armor)
+                    print('You have stashed ',armor.name,'. Choose your next move.')
+            if found == False:
+                print("Error: Invalid entry or item does not exist.")  
+            else:
+                found = False
+        
         elif action_handler[0] == 'use' or action_handler[0] == 'apply' or action_handler[0 == 'equip']:
             target_item = action_handler[1]
             found=False
             for item in player.inventory:
                 if item.name.lower() == target_item.lower():
-                    if item.health and item.protection > 0:
+                    if hasattr(item, 'health') and hasattr(item, 'protection'):
                         found = True
                         player.use_healing(item)
                         print('Choose your next move.')
@@ -166,22 +180,6 @@ while True:
                 print("Error: Invalid entry or item does not exist.")  
             else:
                 found = False
-        
-        elif action_handler[0] == 'stash' or action_handler[0] == 'lose':
-            target_item = action_handler[1]
-            found=False
-            # if player.weapon_on == None or player.weapon_on.name.lower() !=  target_item.lower():
-            for armor in player.inventory:
-                if armor.name.lower() == target_item.lower():
-                    found = True
-                    player.stash_armor(armor)
-                    print('You have stashed ',armor.name,'. Choose your next move.')
-            if found == False:
-                print("Error: Invalid entry or item does not exist.")  
-            else:
-                found = False
-            # else:
-            #     print('Remove armor before dropping')
     
     # player chooses North
     elif key == 'n' or key == '8' or key == '\x1b[A':

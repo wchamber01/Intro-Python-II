@@ -2,20 +2,22 @@
 # description attributes.
 
 class Room:
-    def __init__(self, name, description, inventory=None):
+    def __init__(self, name, description, loot=None):
         self.name = name
         self.description = description
-        self.inventory = [] if inventory is None else inventory
+        self.loot = [] if loot is None else loot
         self.n_to = None
         self.s_to = None
         self.e_to = None
         self.w_to = None
-        
+
     def __str__(self):
-        return('{self.name}, {self.description}, {self.inventory}').format(self=self)
-      
+        return('{self.name}, {self.description}, {self.loot}').format(self=self)
+
+    # add item to room inventory/loot
     def add_item(self, item):
-        self.inventory.append(item)
-    
-    def drop_item(self, item):
-        self.inventory.remove(item)
+        self.loot.append(item)
+
+    # remove item from room inventory/loot
+    def remove_item(self, item):
+        self.loot.remove(item)

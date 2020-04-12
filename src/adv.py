@@ -1,5 +1,5 @@
 from room import Room
-from item import Item
+from item import *
 from player import Player
 import random
 import textwrap
@@ -18,18 +18,18 @@ import textwrap
 
 # Declare all the items
 
-item = {
-    'thieves': Item("Thieves", +25, """You have discovered an ancient blend of spices rumored to cure the dreaded Corona Virus.\n"""),
+item = {                #Name           #Description
+    'thieves': Healing("Thieves", """An ancient blend of spices rumored to cure the dreaded Corona Virus.""",25,2),
     
-    'mask': Item("Mask", +5, """You find an N95 facemask sitting on a dusty table.\n"""),
+    'mask': Armor("Mask", """An N95 facemask sitting on a lone table.""",1),
     
-    'torch': Item("Torch", 0, """A burning torch hanging on the wall""")
+    'torch': Item("Torch", """A burning torch hanging on the wall""")
 }
 
 # Declare all the rooms
 
-room = {
-    'outside':  Room("Outside", "You are now outside the cave entrance. North of you, the cave mouth beckons.\n"),
+room = {                #Name           #Description
+    'outside':  Room("Outside", """You are now outside the cave entrance. North of you, the cave mouth beckons.\n"""),
 
     'foyer':    Room("Foyer", """You have entered the Foyer. Dim light filters in from the south. Dusty passages run north and east.\n"""),
 
@@ -52,24 +52,34 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+# Add items to rooms
+
+room['foyer'].add_item(item['thieves'])
+room['overlook'].add_item(item['mask'])
+room['narrow'].add_item(item['torch'])
+
 #
 # Main
 #
 
 # Welcome message
-print('You have started Jumanji Quarantine Version!')
+
+print('\n\nYou have started Jumanji Quarantine Version!\n')
 cmd = input("If you don't fear for your life, press 'Enter' to continue, otherwise press 'Q' + 'Enter' to abort.\n").lower()
 print(cmd)
 if cmd == 'q':
+    print('Goodbye!')
     exit(0)
 else:
     pass
 
+
 # Make a new player object that is currently in the 'outside' room.
+
 player_name = input("Enter player's name: ")
 player = Player(player_name, 100, room['outside'])
-#print('initialize',player)
-print('\nWelcome, ' + player.name + '! Your health is '+str(player.health)+'%.\nYou have landed outside.\nNorth of you, the cave mouth beckons.\nChoose a direction to start exploring.\n')
+
+print('\nWelcome, ' + player.name + '! Your health is '+str(player.health)+'%.\nYour protection level is '+str(player.protection)+'/10.\nYou have landed outside.\nNorth of you, the cave mouth beckons.\nChoose a direction to start exploring.\n')
 
 
 # Write a loop that:
@@ -81,46 +91,125 @@ while True:
     def describe():
         print('Current room: '+ player.room.name)
         print('Description:'+ player.room.description)
-   
-    def test():    
-        x, y = key.split() 
-        print("Number of boys: ", x) 
-        print("Number of girls: ", y) 
-    
+        if len(player.room.loot) > 0:
+            for item in player.room.loot:
+                print("You have found ",item,". Type 'get [item name]' to add item to your collection.")
+        else:
+            pass
     key = input("Enter [N] North,  [S] South,  [E] East, or [W] West to move player.\n").lower()
     if key == 'q':
+        print('Goodbye!')
         break
     
-    elif key == 'get item':
-        print('test, test, test')
+    elif key == 'status' or key == 'stat':
+        print('Stats: ',player)
+    
+    elif key == 'h' or key == 'health':
+        print(player.health)
+    
+    elif key == 'i' or key == 'info':
+        for i in player.inventory:
+            if len(player.inventory) == 0:
+                print('There are no items in your inventory.')
+            else:
+                print('Current Inventory: ',i.name)
+    
+    elif len(key.split()) == 2:
+        action_handler = key.split()
+        
+        if action_handler[0] == 'take' or action_handler[0] == 'get':
+            target_item = action_handler[1]
+            found=False
+            for i in player.room.loot:
+                if i.name.lower() == target_item.lower():
+                    found = True
+                    player.add_item(i)
+                    player.room.remove_item(i)
+                    print('You have added ',i.name,'to your inventory. What is your next move?')
+            if found == False:
+                print("Error: Invalid entry or item does not exist.")   
+            else:
+                found = False
+        
+        elif action_handler[0] == 'drop' or action_handler[0] == 'remove':
+            target_item = action_handler[1]
+            found=False
+            if player.armor_on == None or player.armor_on.name.lower() != target_item.lower():
+                for i in player.inventory:
+                    if i.name.lower() == target_item.lower():
+                        found = True
+                        player.drop_item(i)
+                        player.room.add_item(i)
+                        print('You have dropped ',i.name,'. Choose your next move.')
+                if found == False:
+                    print("Error: Invalid entry or item does not exist.")  
+                else:
+                    found = False
+            else:
+                print('Stash armor before dropping.')
+        
+        elif action_handler[0] == 'equip' or action_handler[0 == 'apply']:
+            target_item = action_handler[1]
+            found=False
+            for armor in player.inventory:
+                if armor.name.lower() == target_item.lower():
+                    found = True
+                    player.use_armor(armor)
+                    print('You have equipped ',armor.name,'. Choose your next move.')
+            if found == False:
+                print("Error: Invalid entry or item does not exist.")  
+            else:
+                found = False
+        
+        elif action_handler[0] == 'stash' or action_handler[0] == 'lose':
+            target_item = action_handler[1]
+            found=False
+            # if player.weapon_on == None or player.weapon_on.name.lower() !=  target_item.lower():
+            for armor in player.inventory:
+                if armor.name.lower() == target_item.lower():
+                    found = True
+                    player.remove_armor(armor)
+                    print('You have stashed ',armor.name,'. Choose your next move.')
+            if found == False:
+                print("Error: Invalid entry or item does not exist.")  
+            else:
+                found = False
+            # else:
+            #     print('Remove armor before dropping')
+    
     # player chooses North
-    elif key == 'n':
+    elif key == 'n' or key == 8 or key == '\x1b[A':
         if player.room.n_to != None:
             player.room = player.room.n_to
             describe()
+            
         else:
             no_enter()
-    # player chooses North
-    elif key == 's':
+    
+    # player chooses South
+    elif key == 's' or key == 2 or key == '\x1b[B':
         if player.room.s_to != None:
             player.room = player.room.s_to
             describe()
         else:
             no_enter()
+    
     # player chooses East
-    elif key == 'e':
+    elif key == 'e' or key == 6 or key == '\x1b[C':
         if player.room.e_to != None:
             player.room = player.room.e_to
             describe()
         else:
             no_enter()
+    
     # player chooses West
-    elif key == 'w':
+    elif key == 'w' or key == 4 or key == '\x1b[D':
         if player.room.w_to != None:
             player.room = player.room.w_to
             describe()
         else:
             no_enter()
+    
     else:
         print('Invalid entry. Please try again.')
 

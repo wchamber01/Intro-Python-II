@@ -2,7 +2,7 @@
 # currently, etc.
 
 class Player:
-    def __init__(self, name, health, room, inventory=None, armor_on=None, weapon_on=None):
+    def __init__(self, name, health, protection, room, inventory=None, armor_on=None, weapon_on=None):
         self.name = name
         self.health = health
         self.protection = protection
@@ -21,35 +21,26 @@ class Player:
     # remove item from player inventory
     def drop_item(self, item):
         self.inventory.remove(item)
-        ''' **** pseudo code ***
-        if item to be dropped matches Healing item with protection level
-        then self.protection = self.protection-item.protection 
-        
-        for i in self.inventory:
-            if 
-        
-        
-        '''
-        
-    
+
     # apply armor inventory item to player i.e. put on/use armor item
     def use_armor(self, item):
         self.armor_on = item
         self.protection = self.protection+item.protection
-        print('Your protection level is : ',self.protection,'.')
+        print('Your protection level is : ',self.protection,'/10.')
     
     # stash armor item from use - *Required before drop_item
     def stash_armor(self, item):
         self.armor_on = None
         self.protection = self.protection-item.protection
-        print('Your protection level is : ',self.protection,'.')
+        print('Your protection level is : ',self.protection,'/10.')
     
     # apply healing inventory item to player i.e. use/eat healing item
     def use_healing(self, item):
         self.health = self.health+item.health
         self.protection = self.protection+item.protection
-        print('Your health is now : ',self.health,'.')
-        print('Your protection level is : ',self.protection,'.')
+        self.inventory.remove(item)
+        print('Your health is now : ',self.health,'/100.')
+        print('Your protection level is : ',self.protection,'/10.')
     
     # equip/ready weapon inventory item onto player i.e. hold/ready weapon item
     def ready_weapon(self, item):

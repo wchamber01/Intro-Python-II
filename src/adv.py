@@ -77,9 +77,9 @@ else:
 # Make a new player object that is currently in the 'outside' room.
 
 player_name = input("Enter player's name: ")
-player = Player(player_name, 100, room['outside'])
+player = Player(player_name, 100, 0, room['outside'])
 
-print('\nWelcome, ' + player.name + '! Your health is '+str(player.health)+'%.\nYour protection level is '+str(player.protection)+'/10.\nYou have landed outside.\nNorth of you, the cave mouth beckons.\nChoose a direction to start exploring.\n')
+print('\nWelcome, ' + player.name + '! Your health is '+str(player.health)+'/100.\nYour protection level is '+str(player.protection)+'/10.\n\nYou have landed outside.\nNorth of you, the cave mouth beckons.\n\nChoose a direction to start exploring.\n')
 
 
 # Write a loop that:
@@ -105,7 +105,8 @@ while True:
         print('Stats: ',player)
     
     elif key == 'h' or key == 'health':
-        print(player.health)
+        print('Health: ',player.health)
+        print('Protection level: ',player.protection,'/10.')
     
     elif key == 'i' or key == 'info':
         for i in player.inventory:
@@ -134,8 +135,8 @@ while True:
         elif action_handler[0] == 'drop' or action_handler[0] == 'remove':
             target_item = action_handler[1]
             found=False
-            if player.armor_on == None or player.armor_on.name.lower() != target_item.lower():
-                for i in player.inventory:
+            for i in player.inventory:
+                if player.armor_on == None or player.armor_on.name.lower() != target_item.lower():
                     if i.name.lower() == target_item.lower():
                         found = True
                         player.drop_item(i)
@@ -145,17 +146,22 @@ while True:
                     print("Error: Invalid entry or item does not exist.")  
                 else:
                     found = False
-            else:
-                print('Stash armor before dropping.')
+                    print('Stash armor before dropping.')                
         
-        elif action_handler[0] == 'equip' or action_handler[0 == 'apply']:
+        # ************ How do I distinguish between armor and healing items? *******************
+        elif action_handler[0] == 'use' or action_handler[0] == 'apply' or action_handler[0 == 'equip']:
             target_item = action_handler[1]
             found=False
-            for armor in player.inventory:
-                if armor.name.lower() == target_item.lower():
-                    found = True
-                    player.use_armor(armor)
-                    print('You have equipped ',armor.name,'. Choose your next move.')
+            for item in player.inventory:
+                if item.name.lower() == target_item.lower():
+                    if item.health and item.protection > 0:
+                        found = True
+                        player.use_healing(item)
+                        print('Choose your next move.')
+                    elif item.protection:
+                        found = True
+                        player.use_armor(item)
+                        print('You have equipped ',item.name,'. Choose your next move.')
             if found == False:
                 print("Error: Invalid entry or item does not exist.")  
             else:
@@ -168,7 +174,7 @@ while True:
             for armor in player.inventory:
                 if armor.name.lower() == target_item.lower():
                     found = True
-                    player.remove_armor(armor)
+                    player.stash_armor(armor)
                     print('You have stashed ',armor.name,'. Choose your next move.')
             if found == False:
                 print("Error: Invalid entry or item does not exist.")  
@@ -178,7 +184,7 @@ while True:
             #     print('Remove armor before dropping')
     
     # player chooses North
-    elif key == 'n' or key == 8 or key == '\x1b[A':
+    elif key == 'n' or key == '8' or key == '\x1b[A':
         if player.room.n_to != None:
             player.room = player.room.n_to
             describe()
@@ -187,7 +193,7 @@ while True:
             no_enter()
     
     # player chooses South
-    elif key == 's' or key == 2 or key == '\x1b[B':
+    elif key == 's' or key == '2' or key == '\x1b[B':
         if player.room.s_to != None:
             player.room = player.room.s_to
             describe()
@@ -195,7 +201,7 @@ while True:
             no_enter()
     
     # player chooses East
-    elif key == 'e' or key == 6 or key == '\x1b[C':
+    elif key == 'e' or key == '6' or key == '\x1b[C':
         if player.room.e_to != None:
             player.room = player.room.e_to
             describe()
@@ -203,7 +209,7 @@ while True:
             no_enter()
     
     # player chooses West
-    elif key == 'w' or key == 4 or key == '\x1b[D':
+    elif key == 'w' or key == '4' or key == '\x1b[D':
         if player.room.w_to != None:
             player.room = player.room.w_to
             describe()
